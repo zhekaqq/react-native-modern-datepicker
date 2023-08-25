@@ -1,17 +1,17 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  View,
+  Animated,
+  Easing,
+  I18nManager,
+  Image,
   StyleSheet,
   Text,
-  Animated,
-  TouchableOpacity,
-  Easing,
-  Image,
   TextInput,
-  I18nManager,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
-import {useCalendar} from '../DatePicker';
+import { useCalendar } from '../DatePicker';
 
 const SelectMonth = () => {
   const {
@@ -29,11 +29,16 @@ const SelectMonth = () => {
   const [mainState, setMainState] = state;
   const [show, setShow] = useState(false);
   const style = styles(options);
-  const [year, setYear] = useState(utils.getMonthYearText(mainState.activeDate).split(' ')[1]);
+  const [year, setYear] = useState(
+    utils.getMonthYearText(mainState.activeDate).split(' ')[1],
+  );
   const openAnimation = useRef(new Animated.Value(0)).current;
   const currentMonth = Number(mainState.activeDate.split('/')[1]);
-  const prevDisable = maximumDate && utils.checkYearDisabled(Number(utils.toEnglish(year)), true);
-  const nextDisable = minimumDate && utils.checkYearDisabled(Number(utils.toEnglish(year)), false);
+  const prevDisable =
+    maximumDate && utils.checkYearDisabled(Number(utils.toEnglish(year)), true);
+  const nextDisable =
+    minimumDate &&
+    utils.checkYearDisabled(Number(utils.toEnglish(year)), false);
 
   useEffect(() => {
     mainState.monthOpen && setShow(true);
@@ -56,12 +61,17 @@ const SelectMonth = () => {
       let y = Number(utils.toEnglish(year));
       const date = utils.getDate(utils.validYear(mainState.activeDate, y));
       const activeDate =
-        month !== null ? (isGregorian ? date.month(month) : date.jMonth(month)) : date;
+        month !== null
+          ? isGregorian
+            ? date.month(month)
+            : date.jMonth(month)
+          : date;
       setMainState({
         type: 'set',
         activeDate: utils.getFormated(activeDate),
       });
-      month !== null && onMonthYearChange(utils.getFormated(activeDate, 'monthYearFormat'));
+      month !== null &&
+        onMonthYearChange(utils.getFormated(activeDate, 'monthYearFormat'));
       month !== null &&
         mode !== 'monthYear' &&
         setMainState({
@@ -76,6 +86,14 @@ const SelectMonth = () => {
   }, [prevDisable, nextDisable]);
 
   const onChangeYear = text => {
+    if (isNaN(Number(text))) {
+      return;
+    }
+
+    if (Number(text) < 0 || Number(text) > 9999) {
+      return;
+    }
+
     if (Number(utils.toEnglish(text))) {
       setYear(utils.toPersianNumber(text));
     }
@@ -115,7 +133,11 @@ const SelectMonth = () => {
           onPress={() => !nextDisable && onSelectYear(-1)}>
           <Image
             source={require('../../assets/arrow.png')}
-            style={[style.arrow, style.leftArrow, nextDisable && style.disableArrow]}
+            style={[
+              style.arrow,
+              style.leftArrow,
+              nextDisable && style.disableArrow,
+            ]}
           />
         </TouchableOpacity>
         <TextInput
@@ -144,12 +166,18 @@ const SelectMonth = () => {
 
       <View style={[style.monthList, utils.flexDirection]}>
         {[...Array(12).keys()].map(item => {
-          const disabled = utils.checkSelectMonthDisabled(mainState.activeDate, item);
+          const disabled = utils.checkSelectMonthDisabled(
+            mainState.activeDate,
+            item,
+          );
           return (
             <TouchableOpacity
               key={item}
               activeOpacity={0.8}
-              style={[style.item, currentMonth === item + 1 && style.selectedItem]}
+              style={[
+                style.item,
+                currentMonth === item + 1 && style.selectedItem,
+              ]}
               onPress={() => !disabled && onSelectMonth(item)}>
               <Text
                 style={[
@@ -256,4 +284,4 @@ const styles = theme =>
     },
   });
 
-export {SelectMonth};
+export { SelectMonth };
