@@ -144,6 +144,7 @@ const SelectMonth = () => {
           maxLength={4}
           value={year}
           onBlur={() => onSelectYear(0)}
+          onSubmitEditing={() => onSelectYear(0)}
           underlineColorAndroid={'rgba(0,0,0,0)'}
           returnKeyType="done"
           autoCorrect={false}
