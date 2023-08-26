@@ -94,9 +94,7 @@ const SelectMonth = () => {
       return;
     }
 
-    if (Number(utils.toEnglish(text))) {
-      setYear(utils.toPersianNumber(text));
-    }
+    setYear(utils.toPersianNumber(text));
   };
 
   const onSelectYear = number => {
